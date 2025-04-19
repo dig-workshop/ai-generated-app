@@ -20,7 +20,6 @@ app.post('/upload', upload.single('pdf'), (req, res) => {
 });
 
 app.get('/download/:filename', (req, res) => {
-	console.log(req)
 	const filePath = path.join(__dirname, 'uploads', req.params.filename);
 	const fileStream = fs.createReadStream(filePath);
 	fileStream.on('error', () => {
