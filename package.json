@@ -4,7 +4,8 @@
   "description": "foo bar app!",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "start": "tsc index.ts --esModuleInterop && node index.js"
   },
   "repository": {
     "type": "git",
@@ -28,7 +29,9 @@
     "@types/multer": "^1.4.11",
     "@types/node": "^20.11.25",
     "@types/supertest": "^6.0.2",
-    "supertest": "7.0.0"
+    "jest": "^29.7.0",
+    "supertest": "7.0.0",
+    "typescript": "^5.8.3"
   },
   "dependencies": {
     "csurf": "^1.11.0",
