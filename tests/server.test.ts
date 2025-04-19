@@ -1,7 +1,7 @@
-import request from 'supertest';
-import fs from 'fs';
-import path from 'path';
-import { app } from '../index';
+const request = require('supertest');
+const fs = require('fs');
+const path = require('path');
+const { app } = require('../index');
 
 describe('PDF Upload/Download', () => {
   const uploadDir = path.join(__dirname, '../uploads');
@@ -10,10 +10,19 @@ describe('PDF Upload/Download', () => {
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir);
     }
+    // ダミーのtest.pdfを作成
+    fs.writeFileSync(path.join(__dirname, 'test.pdf'), 'dummy pdf content');
+
+    // ダミーのtest.jpgを作成
+    fs.writeFileSync(path.join(__dirname, 'test.jpg'), 'dummy jpg content');
   });
 
   afterAll(() => {
     fs.rmSync(uploadDir, { recursive: true, force: true });
+
+    // テストファイルも消す
+    fs.rmSync(path.join(__dirname, 'test.pdf'), { force: true });
+    fs.rmSync(path.join(__dirname, 'test.jpg'), { force: true });
   });
 
   describe('Upload PDF', () => {
@@ -30,7 +39,7 @@ describe('PDF Upload/Download', () => {
         .post('/upload')
         .attach('pdf', path.join(__dirname, 'test.jpg'));
       expect(res.statusCode).toBe(400);
-      expect(res.text).toBe('No file uploaded.');
+      expect(res.text).toBe('Only PDF files are allowed.');
     });
   });
 
@@ -49,6 +58,14 @@ describe('PDF Upload/Download', () => {
       const res = await request(app).get('/download/nonexistent.pdf');
       expect(res.statusCode).toBe(404);
       expect(res.text).toBe('File not found');
+    });
+
+    it('should not allow path traversal attack', async () => {
+      const res = await request(app)
+          .get('/download/..%2F.env')
+
+      console.log('サーバー側で受け取ったレスポンス:', res);
+      expect(403).toEqual(res.statusCode);
     });
   });
 });
