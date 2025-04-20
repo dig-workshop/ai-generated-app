@@ -23,6 +23,8 @@ exports.app.post('/upload', upload.single('pdf'), function (req, res) {
 exports.app.get('/download/:filename', function (req, res) {
     var uploadsDir = path_1.default.resolve(__dirname, 'uploads');
     var requestedPath = path_1.default.resolve(uploadsDir, req.params.filename);
+    console.log('requestedPath');
+    console.log(requestedPath);
     if (!requestedPath.startsWith(uploadsDir)) {
         return res.status(400).send('Invalid file path');
     }
@@ -30,9 +32,6 @@ exports.app.get('/download/:filename', function (req, res) {
         var fileStream = fs_1.default.createReadStream(requestedPath);
         fileStream.on('error', function () {
             res.status(404).send('File not found');
-        });
-        fileStream.on('close', function () {
-            res.end();
         });
         fileStream.pipe(res);
     }
