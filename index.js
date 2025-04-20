@@ -21,7 +21,6 @@ exports.app.post('/upload', upload.single('pdf'), function (req, res) {
     res.send("File uploaded: ".concat(req.file.filename));
 });
 exports.app.get('/download/:filename', function (req, res) {
-    console.log(req);
     var filePath = path_1.default.join(__dirname, 'uploads', req.params.filename);
     var fileStream = fs_1.default.createReadStream(filePath);
     fileStream.on('error', function () {
