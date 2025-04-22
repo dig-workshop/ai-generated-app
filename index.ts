@@ -30,6 +30,6 @@ app.get('/download/:filename', (req, res) => {
 
 if (require.main === module) {
 	app.listen(3000, () => {
-		console.log('Server listening on port 3000');
+		console.log('Server listening on http://localhost:3000')
 	});
 }
