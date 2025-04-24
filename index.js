@@ -21,21 +21,18 @@ exports.app.post('/upload', upload.single('pdf'), function (req, res) {
     res.send("File uploaded: ".concat(req.file.filename));
 });
 exports.app.get('/download/:filename', function (req, res) {
-    var uploadsDir = path_1.default.resolve(__dirname, 'uploads');
-    var requestedPath = path_1.default.resolve(uploadsDir, req.params.filename);
-    console.log('requestedPath');
-    console.log(requestedPath);
-    if (!requestedPath.startsWith(uploadsDir)) {
-        return res.status(400).send('Invalid file path');
-    }
-    if (requestedPath.startsWith(uploadsDir)) {
-        var fileStream = fs_1.default.createReadStream(requestedPath);
-        fileStream.on('error', function () {
-            res.status(404).send('File not found');
-        });
-        fileStream.pipe(res);
-    }
+    var normaraizedPath = path_1.default.normalize(req.params.filename);
+    var filePath = path_1.default.resolve(__dirname, 'uploads', normaraizedPath);
+    if (!filePath.startsWith(path_1.default.resolve(__dirname, 'uploads')))
+        return res.status(400).send();
+    var fileStream = fs_1.default.createReadStream(filePath);
+    fileStream.on('error', function () {
+        res.status(404).send('File not found');
+    });
+    fileStream.pipe(res);
 });
-exports.app.listen(3000, function () {
-    console.log('Server listening on port 3000');
-});
+if (require.main === module) {
+    exports.app.listen(3000, function () {
+        console.log('Server listening on http://localhost:3000');
+    });
+}

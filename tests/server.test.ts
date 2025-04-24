@@ -64,7 +64,6 @@ describe('PDF Upload/Download', () => {
       const res = await request(app)
           .get('/download/..%2F.env')
 
-      console.log('サーバー側で受け取ったレスポンス:', res);
       expect(400).toEqual(res.statusCode);
     });
   });
